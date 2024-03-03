@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -25,6 +25,20 @@ const switchToTeam = (team) => {
 const logout = () => {
     router.post(route('logout'));
 };
+
+let menus = [
+    {
+        name: 'Dashboard',
+        url: route('dashboard'),
+        route: 'dashboard',
+        when: () => usePage().props.auth.user
+    },
+    {
+        name: 'Post index',
+        url: route('posts.index'),
+        route: 'posts.index',
+    }
+]
 </script>
 
 <template>
@@ -41,16 +55,19 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('posts.index')">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
+                               <template v-for="menu in menus" :key="menu.name" >
+                                   <NavLink v-if="menu.when ? menu.when() : true" :href="menu.url" :active="route().current(menu.route)">
+                                       {{menu.name}}
+                                   </NavLink>
+                               </template>
+
                             </div>
                         </div>
 
@@ -114,7 +131,7 @@ const logout = () => {
                             </div>
 
                             <!-- Settings Dropdown -->
-                            <div class="ms-3 relative">
+                            <div class="ms-3 relative" v-if="$page.props.auth.user">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -157,6 +174,11 @@ const logout = () => {
                                     </template>
                                 </Dropdown>
                             </div>
+                            <div class="" v-else>
+                                <Link :href="route('login')">
+                                    Login
+                                </Link>
+                            </div>
                         </div>
 
                         <!-- Hamburger -->
@@ -197,7 +219,7 @@ const logout = () => {
                     </div>
 
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="pt-4 pb-1 border-t border-gray-200" v-if="$page.props.auth.user">
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 me-3">
                                 <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
@@ -269,6 +291,11 @@ const logout = () => {
                                 </template>
                             </template>
                         </div>
+                    </div>
+                    <div v-else>
+                        <Link :href="route('login')">
+                            Login
+                        </Link>
                     </div>
                 </div>
             </nav>
