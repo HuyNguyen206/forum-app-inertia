@@ -18,8 +18,16 @@ it('pass the post to the view', function () {
 
 it('can show the detail post', function () {
     $post = \App\Models\Post::factory()->create();
-    \Pest\Laravel\withoutExceptionHandling();
     get(route('posts.show', $post->id))
         ->assertComponent('Posts/Show')
         ->assertHasResource('post', \App\Http\Resources\PostResource::make($post->load('comments', 'user')));
+});
+
+it('show post with correct comments', function () {
+    $post = \App\Models\Post::factory()->create();
+    $comments = \App\Models\Comment::factory(3)->for($post)->create();
+//    $post->comments()->saveMany(\App\Models\Comment::factory(3)->make());
+
+//    get(route('posts.show', $post->id))->assertInertia(fn (AssertableInertia $page) => $page->has('post.comments', 3));
+    get(route('posts.show', $post->id))->assertHasPaginatedResource('comments', \App\Http\Resources\CommentResource::collection($comments));
 });
