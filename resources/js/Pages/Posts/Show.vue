@@ -6,10 +6,24 @@ import Paginator from "@/Components/paginator.vue";
 import {computed} from "vue";
 import {parseISO, formatDistance} from "date-fns";
 import Comment from "@/Components/Comment.vue";
+import {useForm} from "@inertiajs/vue3";
+import InputError from "@/Components/InputError.vue";
 
 const props = defineProps(['post', 'comments'])
 
 const formatedDate = computed(() => formatDistance(parseISO(props.post.created_at), new Date()))
+
+const commentForm = useForm({
+    body: ''
+})
+
+const addComment = () => commentForm.post(
+    route('posts.comments.store', props.post.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            commentForm.reset()
+        }
+    })
 </script>
 
 <template>
@@ -31,25 +45,20 @@ const formatedDate = computed(() => formatDistance(parseISO(props.post.created_a
                         </div>
                         <Paginator :meta="props.comments.meta" only="comments"></Paginator>
 
-                        <form class="bg-white p-4 rounded-lg shadow-md">
+                        <form @submit.prevent="addComment" v-if="$page.props.auth.user" class="bg-white p-4 rounded-lg shadow-md">
                             <h3 class="text-lg font-bold mb-2">Add a comment</h3>
-                            <div class="mb-4">
-                                <label class="block text-gray-700 font-bold mb-2" for="name">
-                                    Name
-                                </label>
-                                <input
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="name" type="text" placeholder="Enter your name">
-                            </div>
                             <div class="mb-4">
                                 <label class="block text-gray-700 font-bold mb-2" for="comment">
                                     Comment
                                 </label>
                                 <textarea
+                                    v-model="commentForm.body"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="comment" rows="3" placeholder="Enter your comment"></textarea>
+                            <InputError :message="commentForm.errors.body"></InputError>
                             </div>
                             <button
+                                :disabled="commentForm.processing"
                                 class="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 type="submit">
                                 Submit

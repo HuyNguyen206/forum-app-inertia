@@ -1,5 +1,11 @@
 <script setup>
-defineProps(['comment'])
+import {router} from "@inertiajs/vue3";
+
+const props = defineProps(['comment'])
+
+const deleteComment = () => {
+  router.delete(route('comments.destroy', props.comment), {preserveScroll: true})
+}
 </script>
 
 <template>
@@ -12,6 +18,7 @@ defineProps(['comment'])
             </p>
         </div>
     </div>
+        <button v-if="comment.is_owner" class="px-4 py-2 rounded  bg-red-600 text-white" type="button" @click="deleteComment">Delete</button>
 </template>
 
 <style scoped>

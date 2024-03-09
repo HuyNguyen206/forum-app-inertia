@@ -17,6 +17,7 @@ class CommentResource extends BaseResource
         return parent::toArray($request) +
         [
             'body' => $this->body,
+            'is_owner' => $this->user_id === $request->user()?->id,
             'user' => new UserResource($this->whenLoaded('user')),
             'post' => new PostResource($this->whenLoaded('post')),
 

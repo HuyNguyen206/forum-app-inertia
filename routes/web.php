@@ -29,11 +29,13 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::resource('posts.comments', \App\Http\Controllers\CommentController::class)->only(['store']);
+    Route::delete('comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
+
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
 
 Route::resource('posts', \App\Http\Controllers\PostController::class);
-Route::resource('posts.comments', \App\Http\Controllers\CommentController::class)->only(['store']);
 
