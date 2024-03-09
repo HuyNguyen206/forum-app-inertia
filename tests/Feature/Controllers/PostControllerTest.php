@@ -20,7 +20,7 @@ it('can show the detail post', function () {
     $post = \App\Models\Post::factory()->create();
     get(route('posts.show', $post->id))
         ->assertComponent('Posts/Show')
-        ->assertHasResource('post', \App\Http\Resources\PostResource::make($post->load('comments', 'user')));
+        ->assertHasResource('post', \App\Http\Resources\PostResource::make($post->load('user')));
 });
 
 it('show post with correct comments', function () {
@@ -29,5 +29,5 @@ it('show post with correct comments', function () {
 //    $post->comments()->saveMany(\App\Models\Comment::factory(3)->make());
 
 //    get(route('posts.show', $post->id))->assertInertia(fn (AssertableInertia $page) => $page->has('post.comments', 3));
-    get(route('posts.show', $post->id))->assertHasPaginatedResource('comments', \App\Http\Resources\CommentResource::collection($comments));
+    get(route('posts.show', $post->id))->assertHasPaginatedResource('comments', \App\Http\Resources\CommentResource::collection($comments->reverse()->load('user')));
 });

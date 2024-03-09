@@ -5,6 +5,7 @@ import Container from "@/Components/Container.vue";
 import Paginator from "@/Components/paginator.vue";
 import {computed} from "vue";
 import {parseISO, formatDistance} from "date-fns";
+import Comment from "@/Components/Comment.vue";
 
 const props = defineProps(['post', 'comments'])
 
@@ -26,12 +27,9 @@ const formatedDate = computed(() => formatDistance(parseISO(props.post.created_a
                     <h2 class="text-lg font-bold mb-4">Comments ({{props.comments.meta.total}})</h2>
                     <div class="flex flex-col space-y-4">
                         <div v-for="comment in props.comments.data" :key="comment.id" class="bg-white p-4 rounded-lg shadow-md">
-                            <h3 class="text-lg font-bold">{{comment.user.name}}</h3>
-                            <p class="text-gray-700 text-sm mb-2">Posted on {{comment.user.created_at}}</p>
-                            <p class="text-gray-700">{{comment.body}}
-                            </p>
+                              <Comment :comment="comment"></Comment>
                         </div>
-                        <Paginator :meta="props.comments.meta"></Paginator>
+                        <Paginator :meta="props.comments.meta" only="comments"></Paginator>
 
                         <form class="bg-white p-4 rounded-lg shadow-md">
                             <h3 class="text-lg font-bold mb-2">Add a comment</h3>
