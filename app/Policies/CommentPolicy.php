@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\Comment;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Carbon\Carbon;
 
 class CommentPolicy
 {
@@ -45,7 +45,9 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        return $user->is($comment->user);
+        $isPassOneHour = Carbon::now()->diffInMinutes($comment->created_at) > 60;
+
+        return !$isPassOneHour && $user->is($comment->user);
     }
 
     /**

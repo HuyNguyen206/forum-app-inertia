@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommentResource extends BaseResource
 {
@@ -17,7 +16,7 @@ class CommentResource extends BaseResource
         return parent::toArray($request) +
         [
             'body' => $this->body,
-            'is_owner' => $this->user_id === $request->user()?->id,
+            'is_owner' => $request->user()?->can('delete', $this->resource),
             'user' => new UserResource($this->whenLoaded('user')),
             'post' => new PostResource($this->whenLoaded('post')),
 

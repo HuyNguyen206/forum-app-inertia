@@ -1,5 +1,7 @@
 <?php
 
+use function Pest\Laravel\freezeTime;
+
 it('can store comment', function () {
     $user =  \App\Models\User::factory()->create();
     $post = \App\Models\Post::factory()->recycle($user)->create();
@@ -44,7 +46,7 @@ it('guest can not delete comment', function () {
 
 it('can delete comment', function () {
     $comment = \App\Models\Comment::factory()->create();
-    \Pest\Laravel\actingAs(\App\Models\User::factory()->create())->deleteJson(route('comments.destroy', $comment))
+    \Pest\Laravel\actingAs($comment->user)->deleteJson(route('comments.destroy', $comment))
         ->assertRedirect(route('posts.show', $comment->post));
 
    \Pest\Laravel\assertModelMissing($comment);
@@ -55,5 +57,23 @@ it('can not delete other\'s comment', function () {
     $comment = \App\Models\Comment::factory()->create();
     \Pest\Laravel\actingAs(\App\Models\User::factory()->create())->deleteJson(route('comments.destroy', $comment))
         ->assertForbidden();
+});
+
+it('can not delete comment over 1 hour', function () {
+    freezeTime();
+    $comment = \App\Models\Comment::factory()->create();
+    $this->travel(61)->minutes();
+
+    \Pest\Laravel\actingAs($comment->user)->deleteJson(route('comments.destroy', $comment))
+        ->assertForbidden();
+});
+
+it('Redirect with correct page number', function () {
+    $comments = \App\Models\Comment::factory(20)->for($post = \App\Models\Post::factory()->create())->create();
+    $lastComment = $comments->first();
+
+    \Pest\Laravel\actingAs($lastComment->user)->deleteJson(route('comments.destroy', [$lastComment, 'page' => 4]))
+        ->assertRedirect(route('posts.show', [$lastComment->post, 'page' => 4]));
 
 });
+

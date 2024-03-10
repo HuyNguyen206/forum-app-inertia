@@ -4,9 +4,9 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import Container from "@/Components/Container.vue";
 import Paginator from "@/Components/paginator.vue";
 import {computed} from "vue";
-import {parseISO, formatDistance} from "date-fns";
+import {formatDistance, parseISO} from "date-fns";
 import Comment from "@/Components/Comment.vue";
-import {useForm} from "@inertiajs/vue3";
+import {router, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 
 const props = defineProps(['post', 'comments'])
@@ -24,6 +24,10 @@ const addComment = () => commentForm.post(
             commentForm.reset()
         }
     })
+
+const deleteComment = (commentId) => {
+    router.delete(route('comments.destroy', {page: props.comments.meta.current_page, comment: commentId}), {preserveScroll: true})
+}
 </script>
 
 <template>
@@ -41,7 +45,7 @@ const addComment = () => commentForm.post(
                     <h2 class="text-lg font-bold mb-4">Comments ({{props.comments.meta.total}})</h2>
                     <div class="flex flex-col space-y-4">
                         <div v-for="comment in props.comments.data" :key="comment.id" class="bg-white p-4 rounded-lg shadow-md">
-                              <Comment :comment="comment"></Comment>
+                              <Comment :comment="comment" @delete="deleteComment"></Comment>
                         </div>
                         <Paginator :meta="props.comments.meta" only="comments"></Paginator>
 

@@ -22,12 +22,12 @@ class CommentController extends Controller
         return to_route('posts.show', $post);
     }
 
-    public function destroy(Comment $comment)
+    public function destroy(Request $request, Comment $comment)
     {
         $this->authorize('delete', $comment);
 
         $comment->delete();
 
-        return to_route('posts.show', $comment->post_id);
+        return to_route('posts.show', [$comment->post_id, 'page' => $request->page]);
     }
 }
