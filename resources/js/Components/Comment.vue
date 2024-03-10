@@ -7,7 +7,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'edit'])
 </script>
 
 <template>
@@ -20,7 +20,10 @@ const emit = defineEmits(['delete'])
             </p>
         </div>
     </div>
-        <button v-if="comment.is_owner" class="px-4 py-2 rounded  bg-red-600 text-white" type="button" @click="$emit('delete', comment.id)">Delete</button>
+    <div class="flex gap-1">
+        <button v-if="comment.can?.update" class="px-4 py-2 rounded  bg-amber-600 text-white" @click="$emit('edit', comment.id)">Edit</button>
+        <button v-if="comment.can?.delete" class="px-4 py-2 rounded  bg-red-600 text-white" type="button" @click="$emit('delete', comment.id)">Delete</button>
+    </div>
 </template>
 
 <style scoped>

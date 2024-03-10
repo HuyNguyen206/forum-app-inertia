@@ -9,27 +9,11 @@ use Carbon\Carbon;
 class CommentPolicy
 {
     /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Comment $comment): bool
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +21,7 @@ class CommentPolicy
      */
     public function update(User $user, Comment $comment): bool
     {
-        //
+        return $user->is($comment->user);
     }
 
     /**
@@ -48,21 +32,5 @@ class CommentPolicy
         $isPassOneHour = Carbon::now()->diffInMinutes($comment->created_at) > 60;
 
         return !$isPassOneHour && $user->is($comment->user);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Comment $comment): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Comment $comment): bool
-    {
-        //
     }
 }

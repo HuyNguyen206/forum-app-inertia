@@ -77,3 +77,43 @@ it('Redirect with correct page number', function () {
 
 });
 
+it('require authenticate to edit comment', function () {
+    $comment = \App\Models\Comment::factory()->for($post = \App\Models\Post::factory()->create())->create();
+
+    \Pest\Laravel\patchJson(route('comments.update', $comment))->assertUnauthorized();
+
+});
+
+it('can update comment', function () {
+    $comment = \App\Models\Comment::factory()->for($post = \App\Models\Post::factory()->create())->create(['body' => 'old']);
+    \Pest\Laravel\actingAs($comment->user)->patchJson(route('comments.update', [$comment, 'page' => 1]), ['body' => 'update'])->assertRedirect(route('posts.show', [$comment->post, 'page' => 1]));
+
+    $this->assertDatabaseHas(\App\Models\Comment::class, [
+        'body' => 'update',
+        'id' => $comment->id,
+        'user_id' => $comment->user_id,
+        'post_id' => $comment->post_id
+    ]);
+});
+
+it('can not update other user\'s comment', function () {
+    $comment = \App\Models\Comment::factory()->for($post = \App\Models\Post::factory()->create())->create(['body' => 'old']);
+    \Pest\Laravel\actingAs(\App\Models\User::factory()->create())->patchJson(route('comments.update', [$comment, 'page' => 1]), ['body' => 'update'])->assertForbidden();
+
+    $this->assertDatabaseHas(\App\Models\Comment::class, [
+        'body' => 'old',
+        'id' => $comment->id,
+        'user_id' => $comment->user_id,
+        'post_id' => $comment->post_id
+    ]);
+});
+
+it('required body', function ($value) {
+    $comment = \App\Models\Comment::factory()->for($post = \App\Models\Post::factory()->create())->create(['body' => 'old']);
+    \Pest\Laravel\actingAs($comment->user)->patchJson(route('comments.update', [$comment, 'page' => 1]), ['body' => $value])->assertInvalid('body');
+
+    \Pest\Laravel\assertModelExists($comment);
+})->with([
+    null, ''
+]);
+

@@ -16,7 +16,10 @@ class CommentResource extends BaseResource
         return parent::toArray($request) +
         [
             'body' => $this->body,
-            'is_owner' => $request->user()?->can('delete', $this->resource),
+            'can' => [
+                'delete' => $request->user()?->can('delete', $this->resource),
+                'update' => $request->user()?->can('update', $this->resource)
+            ],
             'user' => new UserResource($this->whenLoaded('user')),
             'post' => new PostResource($this->whenLoaded('post')),
 

@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Comment::class);
+    }
+
     public function store(Post $post, Request $request)
     {
         $validated = $request->validate([
@@ -24,9 +29,16 @@ class CommentController extends Controller
 
     public function destroy(Request $request, Comment $comment)
     {
-        $this->authorize('delete', $comment);
-
         $comment->delete();
+
+        return to_route('posts.show', [$comment->post_id, 'page' => $request->page]);
+    }
+
+    public function update(Request $request, Comment $comment)
+    {
+        $data = $request->validate(['body' => 'required']);
+
+        $comment->update($data);
 
         return to_route('posts.show', [$comment->post_id, 'page' => $request->page]);
     }
