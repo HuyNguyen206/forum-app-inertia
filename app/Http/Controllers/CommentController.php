@@ -24,14 +24,14 @@ class CommentController extends Controller
             'user_id' => $request->user()->id
         ]);
 
-        return to_route('posts.show', $post);
+        return to_route('posts.show', $post)->banner('Comment added');
     }
 
     public function destroy(Request $request, Comment $comment)
     {
         $comment->delete();
 
-        return to_route('posts.show', [$comment->post_id, 'page' => $request->page]);
+        return to_route('posts.show', [$comment->post_id, 'page' => $request->page])->banner('Comment deleted');
     }
 
     public function update(Request $request, Comment $comment)
@@ -40,6 +40,6 @@ class CommentController extends Controller
 
         $comment->update($data);
 
-        return to_route('posts.show', [$comment->post_id, 'page' => $request->page]);
+        return to_route('posts.show', [$comment->post_id, 'page' => $request->page])->banner('Comment updated');
     }
 }

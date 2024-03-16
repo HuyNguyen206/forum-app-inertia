@@ -8,6 +8,7 @@ import {formatDistance, parseISO} from "date-fns";
 import Comment from "@/Components/Comment.vue";
 import {router, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
+import {useConfirm} from "@/Utilities/Composable/useConfirm.js";
 
 const props = defineProps(['post', 'comments'])
 
@@ -42,11 +43,14 @@ const processComment = () => {
         })
 }
 
-const deleteComment = (commentId) => {
-    router.delete(route('comments.destroy', {
-        page: props.comments.meta.current_page,
-        comment: commentId
-    }), {preserveScroll: true})
+const {confirmation} = useConfirm()
+const deleteComment = async (commentId) => {
+    if (await confirmation('Are you sure', 'Delete this comment')) {
+        router.delete(route('comments.destroy', {
+            page: props.comments.meta.current_page,
+            comment: commentId
+        }), {preserveScroll: true})
+    }
 }
 
 const editComment = (commentId) => {
