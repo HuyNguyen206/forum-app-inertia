@@ -21,7 +21,9 @@ const commentForm = useForm({
 const commentEditId = ref(null);
 
 const bodyComment = ref(null);
-const processComment = () => {
+
+const {confirmation} = useConfirm()
+const processComment = async () => {
     if (!commentEditId.value) {
         commentForm.post(
             route('posts.comments.store', props.post.id), {
@@ -33,6 +35,12 @@ const processComment = () => {
 
         return
     }
+    if (! await confirmation('Are you sure?', 'Update comment?')) {
+        bodyComment.value?.focus()
+        console.log(123)
+        return;
+    }
+    bodyComment.value?.focus()
 
     commentForm.patch(
         route('comments.update', {comment: commentEditId.value, page: props.comments.meta.current_page}), {
@@ -43,7 +51,6 @@ const processComment = () => {
         })
 }
 
-const {confirmation} = useConfirm()
 const deleteComment = async (commentId) => {
     if (await confirmation('Are you sure', 'Delete this comment')) {
         router.delete(route('comments.destroy', {
@@ -64,6 +71,7 @@ const editComment = (commentId) => {
 const cancelEditCommentMode = () => {
     commentForm.reset()
     commentEditId.value = null
+    bodyComment.value?.focus()
 }
 </script>
 

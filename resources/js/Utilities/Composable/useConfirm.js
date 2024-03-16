@@ -33,7 +33,7 @@ const closeConfirmation = () => {
 
 const confirmAccept = () => {
     if (globalState.resolve) {
-        globalState.resolve(false)
+        globalState.resolve(true)
     }
     resetModal()
 }
