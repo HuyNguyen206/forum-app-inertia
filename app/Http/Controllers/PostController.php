@@ -30,7 +30,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'title' => ['required','string','max:255'],
+            'body' => ['required','string','max:2500'],
+        ]);
+
+        $post = $request->user()->posts()->create($data);
+
+        return to_route('posts.show', $post)->banner('Create post success');
     }
 
     /**

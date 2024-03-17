@@ -1,6 +1,5 @@
 <?php
 
-use Inertia\Testing\AssertableInertia;
 use function Pest\Laravel\get;
 
 it('shouyld return the correct component', function () {
@@ -31,3 +30,24 @@ it('show post with correct comments', function () {
 //    get(route('posts.show', $post->id))->assertInertia(fn (AssertableInertia $page) => $page->has('post.comments', 3));
     get(route('posts.show', $post->id))->assertHasPaginatedResource('comments', \App\Http\Resources\CommentResource::collection($comments->reverse()->load('user')));
 });
+
+it('require authenticate to store post', function () {
+    \Pest\Laravel\postJson(route('posts.store'))->assertUnauthorized();
+});
+
+it('store post', function () {
+    $user = \App\Models\User::factory()->create();
+    $postModel = \App\Models\Post::factory()->make(['user_id'=> $user->id]);
+//    dd($postModel->toArray());
+    \Pest\Laravel\actingAs($user)
+        ->postJson(route('posts.store'), $data = $postModel->toArray())->assertRedirect(route('posts.show', $user->posts()->first()));
+//    dd($postModel);
+    \Pest\Laravel\assertDatabaseHas(\App\Models\Post::class, $data);
+});
+
+it('require title, body', function () {
+//    dd($postModel->toArray());
+    \Pest\Laravel\actingAs(\App\Models\User::factory()->create())
+        ->postJson(route('posts.store'))->assertJsonValidationErrors(['title', 'body']);
+});
+

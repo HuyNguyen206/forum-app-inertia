@@ -30,11 +30,12 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::resource('posts.comments', \App\Http\Controllers\CommentController::class)->shallow()->only(['store', 'destroy', 'update']);
+    Route::resource('posts', \App\Http\Controllers\PostController::class)->only(['store', 'destroy', 'update']);
 
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
 
-Route::resource('posts', \App\Http\Controllers\PostController::class);
+Route::resource('posts', \App\Http\Controllers\PostController::class)->only(['show', 'index']);
 
