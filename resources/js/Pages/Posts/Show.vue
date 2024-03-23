@@ -78,7 +78,7 @@ const cancelEditCommentMode = () => {
 <template>
     <AppLayout :title="post.title">
         <Container>
-            <h1 class="font-bold text-2xl pb-2">{{ post.title }} </h1>
+            <h1 class="font-bold text-2xl pb-2 capitalize">{{ post.title }} </h1>
             <span class="text-gray-500 text-sm py-2 inline-block">{{ formatedDate }} by {{ post.user.name }}</span>
             <article>
                 <pre class="whitespace-pre-wrap">

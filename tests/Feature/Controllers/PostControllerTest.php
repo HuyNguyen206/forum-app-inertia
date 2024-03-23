@@ -51,3 +51,27 @@ it('require title, body', function () {
         ->postJson(route('posts.store'))->assertJsonValidationErrors(['title', 'body']);
 });
 
+it('require authenticate to get create post view', function () {
+    get(route('posts.create'))->assertRedirect(route('login'));
+});
+
+it('return correct component', function () {
+    \Pest\Laravel\actingAs(\App\Models\User::factory()->create())
+        ->get(route('posts.create'))->assertComponent('Posts/Create');
+});
+
+it('show title case post', function () {
+    \Pest\Laravel\travel(-1)->weeks();
+    $user = App\Models\User::factory()->create();
+    \Pest\Laravel\travelBack();
+    \Pest\Laravel\actingAs($user)
+        ->postJson(route('posts.store', [
+            'title' => 'Have a nice day',
+            'body' => 'Body desc'
+        ]));
+
+    \Pest\Laravel\assertDatabaseHas(\App\Models\Post::class, [
+       'title' => 'Have A Nice Day',
+        'body' => 'Body desc'
+    ]);
+});

@@ -35,9 +35,15 @@ let menus = [
         when: () => usePage().props.auth.user
     },
     {
-        name: 'Post index',
+        name: 'Posts',
         url: route('posts.index'),
         route: 'posts.index',
+    },
+    {
+        name: 'Create post',
+        url: route('posts.create'),
+        route: 'posts.create',
+        when: () => usePage().props.permissions.can_create_post
     }
 ]
 </script>
