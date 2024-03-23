@@ -30,4 +30,9 @@ class Post extends Model
         );
     }
 
+    public function getShowPostUrl(array $parameters = [], bool $withRedirect = true, string $message = null)
+    {
+        return route('posts.show', [$this, Str::slug($this->title), ...$parameters]);
+    }
+
 }

@@ -38,4 +38,5 @@ Route::middleware([
 });
 
 Route::resource('posts', \App\Http\Controllers\PostController::class)->only(['show', 'index']);
+Route::get('posts/{post}/{slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('posts.show');
 

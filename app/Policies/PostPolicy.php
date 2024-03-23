@@ -29,7 +29,8 @@ class PostPolicy
      */
     public function create(User $user): bool
     {
-        return $user->created_at->diffInWeeks(now()) >= 1;
+//        return $user->created_at->diffInWeeks(now()) >= 1;
+        return true;
     }
 
     /**

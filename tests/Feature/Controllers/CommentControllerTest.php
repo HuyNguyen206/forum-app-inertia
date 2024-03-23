@@ -8,7 +8,7 @@ it('can store comment', function () {
 
     \Pest\Laravel\actingAs($user)->postJson(route('posts.comments.store', $post->id), [
         'body' => 'comment'
-    ])->assertRedirect(route('posts.show', $post));
+    ])->assertRedirect($post->getShowPostUrl());
 
     \Pest\Laravel\assertDatabaseHas('comments', [
         'body' => 'comment',
@@ -47,7 +47,7 @@ it('guest can not delete comment', function () {
 it('can delete comment', function () {
     $comment = \App\Models\Comment::factory()->create();
     \Pest\Laravel\actingAs($comment->user)->deleteJson(route('comments.destroy', $comment))
-        ->assertRedirect(route('posts.show', $comment->post));
+        ->assertRedirect($comment->post->getShowPostUrl());
 
    \Pest\Laravel\assertModelMissing($comment);
     \PHPUnit\Framework\assertNotContains($comment, $comment->post->comments);
@@ -73,7 +73,7 @@ it('Redirect with correct page number', function () {
     $lastComment = $comments->first();
 
     \Pest\Laravel\actingAs($lastComment->user)->deleteJson(route('comments.destroy', [$lastComment, 'page' => 4]))
-        ->assertRedirect(route('posts.show', [$lastComment->post, 'page' => 4]));
+        ->assertRedirect($lastComment->post->getShowPostUrl(['page' => 4]));
 
 });
 
@@ -86,7 +86,8 @@ it('require authenticate to edit comment', function () {
 
 it('can update comment', function () {
     $comment = \App\Models\Comment::factory()->for($post = \App\Models\Post::factory()->create())->create(['body' => 'old']);
-    \Pest\Laravel\actingAs($comment->user)->patchJson(route('comments.update', [$comment, 'page' => 1]), ['body' => 'update'])->assertRedirect(route('posts.show', [$comment->post, 'page' => 1]));
+    \Pest\Laravel\actingAs($comment->user)->patchJson(route('comments.update', [$comment, 'page' => 1]), ['body' => 'update'])
+        ->assertRedirect($comment->post->getShowPostUrl(['page' => 1]));;
 
     $this->assertDatabaseHas(\App\Models\Comment::class, [
         'body' => 'update',

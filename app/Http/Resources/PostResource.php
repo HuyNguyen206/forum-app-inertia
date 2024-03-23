@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends BaseResource
 {
@@ -20,6 +19,7 @@ class PostResource extends BaseResource
             'body' => $this->body,
             'user' => new UserResource($this->whenLoaded('user')),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
+            'show_post_url' => $this->getShowPostUrl($request->query()),
         ];
     }
 }
