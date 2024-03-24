@@ -19,10 +19,12 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
+        "@tiptap/extension-link": "^2.2.4",
         "@tiptap/pm": "^2.2.4",
         "@tiptap/starter-kit": "^2.2.4",
         "@tiptap/vue-3": "^2.2.4",
         "date-fns": "^3.3.1",
+        "remixicon": "^4.2.0",
         "tiptap-markdown": "^0.8.10"
     }
 }
