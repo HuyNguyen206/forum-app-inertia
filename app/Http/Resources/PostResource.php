@@ -17,6 +17,7 @@ class PostResource extends BaseResource
         [
             'title' => $this->title,
             'body' => $this->body,
+            'body_html' => $this->body_html,
             'user' => new UserResource($this->whenLoaded('user')),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'show_post_url' => $this->getShowPostUrl($request->query()),

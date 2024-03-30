@@ -81,9 +81,8 @@ const cancelEditCommentMode = () => {
             <h1 class="font-bold text-2xl pb-2 capitalize">{{ post.title }} </h1>
             <span class="text-gray-500 text-sm py-2 inline-block">{{ formatedDate }} by {{ post.user.name }}</span>
             <article>
-                <pre class="whitespace-pre-wrap">
-                    {{ post.body }}
-                </pre>
+                <article class="prose prose-zinc prose-md nax-w-none" v-html="post.body_html">
+                </article>
             </article>
             <div class="comments">
                 <div class="bg-gray-100 p-6">

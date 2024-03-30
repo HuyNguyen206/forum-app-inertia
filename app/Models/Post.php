@@ -13,6 +13,14 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saving(function (Post $post) {
+            $post->fill(['body_html' => \str($post->body)->markdown()]);
+//            $post->body_html = \str($post->body)->markdown();
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

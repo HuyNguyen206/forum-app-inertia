@@ -88,3 +88,18 @@ it('will redirect if slug is incorrect', function () {
 
     get(route('posts.show', [$post, 'incorrect-slug', 'page' => 2]))->assertRedirect($post->getShowPostUrl(['page' => 2]));
 });
+
+it('generate the html from markdown when create post', function () {
+    $post = \App\Models\Post::factory()->create(['body' => $body = '## Hello world']);
+
+    expect($post->body_html)->toEqual(str($post->body)->markdown());
+});
+
+it('generate the html from markdown when update post', function () {
+    $post = \App\Models\Post::factory()->create(['body' => $body = '## Hello world']);
+    expect($post->body_html)->toEqual(str($post->body)->markdown());
+    $post->update([
+        'body' => '## Good bye world'
+    ]);
+    expect($post->body_html)->toEqual(str($post->body)->markdown());
+});
