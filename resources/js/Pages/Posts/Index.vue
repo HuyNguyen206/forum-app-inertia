@@ -26,7 +26,6 @@ const formatDate = (post) => {
             </ul>
             <Paginator :meta="posts.meta" only="posts"></Paginator>
         </Container>
-
     </AppLayout>
 </template>
 

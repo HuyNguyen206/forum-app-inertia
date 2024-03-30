@@ -16,8 +16,8 @@ const emit = defineEmits(['delete', 'edit'])
         <div>
             <h3 class="text-lg font-bold">{{ comment.user.name }}</h3>
             <p class="text-gray-700 text-sm mb-2">Posted on {{ comment.created_at }}</p>
-            <p class="text-gray-700">{{ comment.body }}
-            </p>
+            <article class="prose prose-md max-w-none" v-html="comment.body_html">
+            </article>
         </div>
     </div>
     <div class="flex gap-1">

@@ -118,3 +118,18 @@ it('required body', function ($value) {
     null, ''
 ]);
 
+it('generate the html from markdown when create comment', function () {
+    $comment = \App\Models\Comment::factory()->create(['body' => $body = '## Hello world']);
+
+    expect($comment->body_html)->toEqual(str($comment->body)->markdown());
+});
+
+it('generate the html from markdown when update comment', function () {
+    $comment = \App\Models\Comment::factory()->create(['body' => $body = '## Hello world']);
+    expect($comment->body_html)->toEqual(str($comment->body)->markdown());
+    $comment->update([
+        'body' => '## Good bye world'
+    ]);
+    expect($comment->body_html)->toEqual(str($comment->body)->markdown());
+});
+

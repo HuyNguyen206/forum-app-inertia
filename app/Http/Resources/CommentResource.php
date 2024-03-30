@@ -16,6 +16,7 @@ class CommentResource extends BaseResource
         return parent::toArray($request) +
         [
             'body' => $this->body,
+            'body_html' => $this->body_html,
             'can' => [
                 'delete' => $request->user()?->can('delete', $this->resource),
                 'update' => $request->user()?->can('update', $this->resource)

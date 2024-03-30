@@ -9,6 +9,7 @@ import Comment from "@/Components/Comment.vue";
 import {router, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import {useConfirm} from "@/Utilities/Composable/useConfirm.js";
+import MarkdownEditor from "@/Components/MarkdownEditor.vue";
 
 const props = defineProps(['post', 'comments'])
 
@@ -101,11 +102,7 @@ const cancelEditCommentMode = () => {
                                 <label class="block text-gray-700 font-bold mb-2" for="comment">
                                     Comment
                                 </label>
-                                <textarea
-                                    ref="bodyComment"
-                                    v-model="commentForm.body"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="comment" rows="3" placeholder="Enter your comment"></textarea>
+                                <MarkdownEditor ref="bodyComment" v-model="commentForm.body" editorClass="min-h-[160px]" placeholder="Speak your mind"></MarkdownEditor>
                                 <InputError :message="commentForm.errors.body"></InputError>
                             </div>
                             <div class="flex space-x-2">
@@ -113,7 +110,7 @@ const cancelEditCommentMode = () => {
                                     :disabled="commentForm.processing"
                                     class="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                     type="submit">
-                                    {{ commentEditId ? 'Edit' : 'Submit' }}
+                                    {{ commentEditId ? 'Update comment' : 'Submit' }}
                                 </button>
                                 <button @click="cancelEditCommentMode" v-if="commentEditId"
                                         class="bg-black hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -124,9 +121,6 @@ const cancelEditCommentMode = () => {
                         </form>
                     </div>
                 </div>
-                <!--                <div v-for="comment in props.comments.data" class="comment">-->
-                <!--                    {{comment.body}}-->
-                <!--                </div>-->
             </div>
         </Container>
     </AppLayout>

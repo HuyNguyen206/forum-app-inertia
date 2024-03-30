@@ -5,6 +5,13 @@ import {watch} from "vue";
 import {Markdown} from "tiptap-markdown";
 import 'remixicon/fonts/remixicon.css'
 import {Link} from "@tiptap/extension-link";
+import {Placeholder} from "@tiptap/extension-placeholder";
+
+const props = defineProps({
+    modelValue: '',
+    editorClass: '',
+    placeholder: '',
+})
 
 const editor = useEditor({
     extensions: [
@@ -16,18 +23,18 @@ const editor = useEditor({
             codeBlock: false,
         }),
         Markdown,
-        Link
+        Link,
+        Placeholder.configure({
+            emptyEditorClass: 'is-editor-empty',
+            placeholder: props.placeholder ?? 'Input the text...'
+        })
     ],
     editorProps: {
         attributes: {
-            class: 'min-h-[512px] mt-4 prose prose-sm max-w-none py-1.5 px-3 border-gray-300',
+            class: `min-h-[512px] mt-4 prose prose-sm max-w-none py-1.5 px-3 border-gray-300 ${props.editorClass}`,
         },
     },
     onUpdate: () => emit('update:modelValue', editor.value?.storage.markdown.getMarkdown())
-})
-
-const props = defineProps({
-    modelValue: ''
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -54,6 +61,9 @@ const promptUserForHref = () => {
 
     return editor.value?.chain().focus().setLink({href}).run()
 }
+
+defineExpose({focus: () => editor.value.commands.focus()})
+
 </script>
 
 <template>
@@ -156,5 +166,8 @@ const promptUserForHref = () => {
 </template>
 
 <style scoped>
-
+:deep(.tiptap p.is-editor-empty:first-child::before) {
+    @apply text-gray-400 float-left h-0 pointer-events-none;
+    content: attr(data-placeholder);
+}
 </style>
