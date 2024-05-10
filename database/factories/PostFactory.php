@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Topic;
 use App\Models\User;
 use App\Support\PostFixture;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -19,8 +20,13 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+        $topicIds = Topic::all('id')->pluck('id')->toArray();
+
         return [
             'user_id' => User::factory(),
+            'topic_id' => function () use ($topicIds) {
+                count($topicIds) ? collect($topicIds)->random() : Topic::factory()->create()->id;
+            },
             'title' => str($this->faker->sentence)->beforeLast('.')->title(),
             'body' => Collection::times(4, fn() => $this->faker->realText(600))->join(PHP_EOL . PHP_EOL)
         ];

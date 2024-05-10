@@ -12,7 +12,7 @@ it('pass the post to the view', function () {
 
     $posts = \App\Models\Post::factory(3)->create();
     get(route('posts.index'))
-        ->assertHasPaginatedResource('posts', \App\Http\Resources\PostResource::collection($posts->load('user', 'comments')));
+        ->assertHasPaginatedResource('posts', \App\Http\Resources\PostResource::collection($posts->load('user', 'comments', 'topic')));
 });
 
 

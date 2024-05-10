@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
 
         $users = User::factory(10)->create();
 
-
+        $this->call(TopicSeeder::class);
         $posts = Post::factory(100)->withFixture()->recycle($users->push($huy))->create();
         Comment::factory(600)->recycle($posts)->recycle($users)->create();
     }
