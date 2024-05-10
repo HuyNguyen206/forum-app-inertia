@@ -158,6 +158,9 @@ defineExpose({focus: () => editor.value.commands.focus()})
                     <i :class="'ri-h-' + level"></i>
                 </button>
             </li>
+            <li>
+                <slot name="toolbar" :editor="editor"></slot>
+            </li>
         </menu>
         <EditorContent :editor="editor">
 

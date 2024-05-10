@@ -7,6 +7,7 @@ import InputError from "@/Components/InputError.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Container from "@/Components/Container.vue";
 import MarkdownEditor from "@/Components/MarkdownEditor.vue";
+import {isProd} from "@/Utilities/environment.js";
 
 const form = useForm({
     title: "",
@@ -14,7 +15,15 @@ const form = useForm({
 })
 
 const createPost = () => form.post(route('posts.store'))
+const autofill = async () => {
+    if (isProd()) {
+        return;
+    }
 
+    const {data} = await axios.get('/local/post-content')
+    form.title = data.title
+    form.body = data.body
+}
 </script>
 
 <template>
@@ -32,12 +41,21 @@ const createPost = () => form.post(route('posts.store'))
                         class="mt-1 block w-full"
                         autofocus
                     />
-                    <InputError :message="form.errors.title" class="mt-2" />
+                    <InputError :message="form.errors.title" class="mt-2"/>
                 </div>
                 <div>
-                    <InputLabel for="body" value="Body" class="sr-only" />
-                    <MarkdownEditor v-model="form.body"></MarkdownEditor>
-                    <InputError :message="form.errors.body" class="mt-2" />
+                    <InputLabel for="body" value="Body" class="sr-only"/>
+                    <MarkdownEditor v-model="form.body">
+                        <template #toolbar="{editor}" v-if="!isProd()">
+                            <button @click="autofill"
+                                    title="Auto fill" type="button"
+                                    class="px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition"
+                            >
+                                <i class="ri-article-line"></i>
+                            </button>
+                        </template>
+                    </MarkdownEditor>
+                    <InputError :message="form.errors.body" class="mt-2"/>
 
                 </div>
 
