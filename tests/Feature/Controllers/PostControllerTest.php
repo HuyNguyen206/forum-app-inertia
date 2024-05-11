@@ -15,6 +15,22 @@ it('pass the post to the view', function () {
         ->assertHasPaginatedResource('posts', \App\Http\Resources\PostResource::collection($posts->load('user', 'comments', 'topic')));
 });
 
+it('can filter posts belong to topic', function () {
+
+    $sportPosts = \App\Models\Post::factory(3)->create(['topic_id' => $sportTopic = \App\Models\Topic::factory()->create(['name' => 'Sport'])]);
+    $gamePosts = \App\Models\Post::factory(4)->create(['topic_id' => $gameTopic =\App\Models\Topic::factory()->create(['name' => 'Game'])]);
+    $newPosts = \App\Models\Post::factory(5)->create(['topic_id' => $newTopic = \App\Models\Topic::factory()->create(['name' => 'New'])]);
+
+    get(route('posts.index', $gameTopic->slug))
+        ->assertHasPaginatedResource('posts', \App\Http\Resources\PostResource::collection($gamePosts->load('user', 'comments', 'topic')));
+});
+
+it('it passed selected topic to the view', function () {
+  $topic = \App\Models\Topic::factory()->create();
+    get(route('posts.index', $topic->slug))
+        ->assertHasResource('selectedTopic', \App\Http\Resources\TopicResource::make($topic));
+});
+
 
 it('can show the detail post', function () {
     $post = \App\Models\Post::factory()->create();

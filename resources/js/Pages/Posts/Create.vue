@@ -8,6 +8,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import Container from "@/Components/Container.vue";
 import MarkdownEditor from "@/Components/MarkdownEditor.vue";
 import {isProd} from "@/Utilities/environment.js";
+import PageHeading from "@/Components/PageHeading.vue";
 
 const form = useForm({
     title: "",
@@ -29,6 +30,7 @@ const autofill = async () => {
 <template>
     <AppLayout title="Create a post">
         <Container>
+            <PageHeading>Create a post</PageHeading>
             <h1 class="font-bold text-2xl pb-2">Create post </h1>
 
             <form @submit.prevent="createPost">

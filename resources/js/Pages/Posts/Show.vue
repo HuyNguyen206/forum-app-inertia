@@ -10,6 +10,7 @@ import {router, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import {useConfirm} from "@/Utilities/Composable/useConfirm.js";
 import MarkdownEditor from "@/Components/MarkdownEditor.vue";
+import PageHeading from "@/Components/PageHeading.vue";
 
 const props = defineProps(['post', 'comments'])
 
@@ -79,7 +80,7 @@ const cancelEditCommentMode = () => {
 <template>
     <AppLayout :title="post.title">
         <Container>
-            <h1 class="font-bold text-2xl pb-2 capitalize">{{ post.title }} </h1>
+            <PageHeading>{{post.title}}</PageHeading>
             <span class="text-gray-500 text-sm py-2 inline-block">{{ formatedDate }} by {{ post.user.name }}</span>
             <article>
                 <article class="prose prose-zinc prose-md nax-w-none" v-html="post.body_html">

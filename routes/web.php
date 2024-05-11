@@ -37,6 +37,7 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::resource('posts', \App\Http\Controllers\PostController::class)->only(['show', 'index']);
+Route::resource('posts', \App\Http\Controllers\PostController::class)->except(['show', 'index']);
+Route::get('posts/{topicSlug?}', [\App\Http\Controllers\PostController::class, 'index'])->name('posts.index');
 Route::get('posts/{post}/{slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('posts.show');
 
