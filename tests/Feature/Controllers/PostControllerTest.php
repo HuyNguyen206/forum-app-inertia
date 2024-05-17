@@ -15,6 +15,13 @@ it('pass the post to the view', function () {
         ->assertHasPaginatedResource('posts', \App\Http\Resources\PostResource::collection($posts->load('user', 'comments', 'topic')));
 });
 
+it('pass the topic to the view', function () {
+    $topics = \App\Models\Topic::factory(10)->create();
+
+    get(route('posts.index'))
+        ->assertHasResource('topics', \App\Http\Resources\TopicResource::collection($topics));
+});
+
 it('can filter posts belong to topic', function () {
 
     $sportPosts = \App\Models\Post::factory(3)->create(['topic_id' => $sportTopic = \App\Models\Topic::factory()->create(['name' => 'Sport'])]);

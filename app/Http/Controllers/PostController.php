@@ -34,7 +34,8 @@ class PostController extends Controller
 
         return inertia('Posts/Index', [
             'posts' => PostResource::collection($posts),
-            'selectedTopic' => $topic ? TopicResource::make($topic) : null
+            'selectedTopic' => $topic ? TopicResource::make($topic) : null,
+            'topics' => TopicResource::collection(Topic::all()),
             ]);
     }
 
