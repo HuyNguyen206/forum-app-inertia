@@ -99,7 +99,8 @@ it('show title case post', function () {
     \Pest\Laravel\actingAs($user)
         ->postJson(route('posts.store', [
             'title' => 'Have a nice day',
-            'body' => 'Body desc'
+            'body' => 'Body desc',
+            'topic_id' => \App\Models\Topic::factory()->create()
         ]));
 
     \Pest\Laravel\assertDatabaseHas(\App\Models\Post::class, [

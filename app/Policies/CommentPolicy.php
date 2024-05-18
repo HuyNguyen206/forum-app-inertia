@@ -29,7 +29,7 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        $isPassOneHour = Carbon::now()->diffInMinutes($comment->created_at) > 60;
+        $isPassOneHour = Carbon::now()->diffInMinutes($comment->created_at, true) > 60;
 
         return !$isPassOneHour && $user->is($comment->user);
     }
