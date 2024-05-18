@@ -11,6 +11,7 @@ import InputError from "@/Components/InputError.vue";
 import {useConfirm} from "@/Utilities/Composable/useConfirm.js";
 import MarkdownEditor from "@/Components/MarkdownEditor.vue";
 import PageHeading from "@/Components/PageHeading.vue";
+import Pill from "@/Components/Pill.vue";
 
 const props = defineProps(['post', 'comments'])
 
@@ -80,7 +81,8 @@ const cancelEditCommentMode = () => {
 <template>
     <AppLayout :title="post.title">
         <Container>
-            <PageHeading>{{post.title}}</PageHeading>
+            <Pill :href="route('posts.index', {topicSlug: post.topic.slug})">{{post.topic.name}}</Pill>
+            <PageHeading class="mt-2">{{post.title}}</PageHeading>
             <span class="text-gray-500 text-sm py-2 inline-block">{{ formatedDate }} by {{ post.user.name }}</span>
             <article>
                 <article class="prose prose-zinc prose-md nax-w-none" v-html="post.body_html">

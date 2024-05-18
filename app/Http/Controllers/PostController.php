@@ -10,6 +10,7 @@ use App\Models\Topic;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -44,7 +45,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return inertia('Posts/Create');
+        return inertia('Posts/Create', [
+            'topics' => TopicResource::collection(Topic::all()),
+        ]);
     }
 
     /**
@@ -55,6 +58,7 @@ class PostController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:2500'],
+            'topic_id' => ['required', Rule::exists(Topic::class, 'id')],
         ]);
 
         $post = $request->user()->posts()->create($data);
@@ -73,8 +77,8 @@ class PostController extends Controller
         }
 
         return inertia('Posts/Show', [
-            'post' => fn() => PostResource::make($post->load('user')),
-            'comments' => fn() => CommentResource::collection($post->comments()->with('user')->latest('id')->paginate(5))
+            'post' => fn() => PostResource::make($post->load(['user', 'topic'])),
+            'comments' => fn() => CommentResource::collection($post->comments()->with('user')->latest('id')->paginate(5)),
         ]);
     }
 

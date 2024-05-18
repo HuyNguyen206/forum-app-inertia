@@ -38,12 +38,20 @@ it('it passed selected topic to the view', function () {
         ->assertHasResource('selectedTopic', \App\Http\Resources\TopicResource::make($topic));
 });
 
+it('it passed topics to the view', function () {
+    $topics = \App\Models\Topic::factory(5)->create();
+    \Pest\Laravel\actingAs(\App\Models\User::factory()->create())->get(route('posts.create'))
+        ->assertHasResource('topics', \App\Http\Resources\TopicResource::collection($topics));
+});
+
 
 it('can show the detail post', function () {
+    \Pest\Laravel\withoutExceptionHandling();
     $post = \App\Models\Post::factory()->create();
+
     get($post->getShowPostUrl())
         ->assertComponent('Posts/Show')
-        ->assertHasResource('post', \App\Http\Resources\PostResource::make($post->load('user')));
+        ->assertHasResource('post', \App\Http\Resources\PostResource::make($post->load(['user', 'topic'])));
 });
 
 it('show post with correct comments', function () {
