@@ -14,6 +14,8 @@ use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
+    public const  PER_PAGE = 5;
+
     public function __construct()
     {
         $this->authorizeResource(Post::class);
@@ -78,7 +80,7 @@ class PostController extends Controller
 
         return inertia('Posts/Show', [
             'post' => fn() => PostResource::make($post->load(['user', 'topic'])),
-            'comments' => fn() => CommentResource::collection($post->comments()->with('user')->latest('id')->paginate(5)),
+            'comments' => fn() => CommentResource::collection($post->comments()->with('user')->latest('id')->paginate(self::PER_PAGE)),
         ]);
     }
 

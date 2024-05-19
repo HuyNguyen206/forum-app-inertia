@@ -2,7 +2,7 @@
 import {Link} from '@inertiajs/vue3'
 import {computed} from "vue";
 
-const {meta} = defineProps({
+const props = defineProps({
     meta: {
         type: Object,
         required: true
@@ -12,8 +12,9 @@ const {meta} = defineProps({
         default: () => []
     }
 })
-const previousPage = computed(() => meta.links[0])
-const nextPage = computed(() => meta.links[meta.links.length - 1])
+const only = computed(() => props.only.length === 0 ? [] : [...props.only, 'jetstream'])
+const previousPage = computed(() => props.meta.links[0])
+const nextPage = computed(() => props.meta.links[props.meta.links.length - 1])
 </script>
 
 <template>

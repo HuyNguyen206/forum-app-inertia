@@ -57,7 +57,7 @@ const processComment = async () => {
 const deleteComment = async (commentId) => {
     if (await confirmation('Are you sure', 'Delete this comment')) {
         router.delete(route('comments.destroy', {
-            page: props.comments.meta.current_page,
+            page: props.comments.data.length === 1 ? Math.max(props.comments.meta.current_page - 1, 1) : props.comments.meta.current_page,
             comment: commentId
         }), {preserveScroll: true})
     }
@@ -96,7 +96,7 @@ const cancelEditCommentMode = () => {
                              class="bg-white p-4 rounded-lg shadow-md">
                             <Comment :comment="comment" @edit="editComment" @delete="deleteComment"></Comment>
                         </div>
-                        <Paginator :meta="props.comments.meta" only="comments"></Paginator>
+                        <Paginator :meta="props.comments.meta" :only='["comments"]'></Paginator>
 
                         <form @submit.prevent="processComment" v-if="$page.props.auth.user"
                               class="bg-white p-4 rounded-lg shadow-md">
@@ -105,7 +105,7 @@ const cancelEditCommentMode = () => {
                                 <label class="block text-gray-700 font-bold mb-2" for="comment">
                                     Comment
                                 </label>
-                                <MarkdownEditor ref="bodyComment" v-model="commentForm.body" editorClass="min-h-[160px]" placeholder="Speak your mind"></MarkdownEditor>
+                                <MarkdownEditor ref="bodyComment" v-model="commentForm.body" editorClass="!min-h-[160px]" placeholder="Speak your mind"></MarkdownEditor>
                                 <InputError :message="commentForm.errors.body"></InputError>
                             </div>
                             <div class="flex space-x-2">

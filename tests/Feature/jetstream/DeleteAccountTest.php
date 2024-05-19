@@ -9,7 +9,6 @@ test('user accounts can be deleted', function () {
     $response = $this->delete('/user', [
         'password' => 'password',
     ]);
-
     expect($user->fresh())->toBeNull();
 })->skip(function () {
     return ! Features::hasAccountDeletionFeatures();
