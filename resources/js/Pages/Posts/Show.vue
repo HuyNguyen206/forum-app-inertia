@@ -6,7 +6,7 @@ import Paginator from "@/Components/paginator.vue";
 import {computed, ref} from "vue";
 import {formatDistance, parseISO} from "date-fns";
 import Comment from "@/Components/Comment.vue";
-import {router, useForm} from "@inertiajs/vue3";
+import {Head, Link, router, useForm} from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import {useConfirm} from "@/Utilities/Composable/useConfirm.js";
 import MarkdownEditor from "@/Components/MarkdownEditor.vue";
@@ -79,6 +79,9 @@ const cancelEditCommentMode = () => {
 </script>
 
 <template>
+    <Head>
+        <link rel="canonical" :href="props.post.show_post_url_without_query_string">
+    </Head>
     <AppLayout :title="post.title">
         <Container>
             <Pill :href="route('posts.index', {topicSlug: post.topic.slug})">{{post.topic.name}}</Pill>

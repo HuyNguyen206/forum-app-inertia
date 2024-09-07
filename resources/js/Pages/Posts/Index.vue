@@ -11,7 +11,7 @@ import Pill from "@/Components/Pill.vue";
 defineProps(['posts', 'selectedTopic', 'topics'])
 
 const formatDate = (post) => {
-    return formatDistance(parseISO(post.created_at), new Date());
+    return formatDistance(parseISO(post.created_at), new Date(), {addSuffix: true});
 }
 </script>
 
