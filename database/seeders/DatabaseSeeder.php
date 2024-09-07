@@ -32,8 +32,21 @@ class DatabaseSeeder extends Seeder
 //        });
 
         $posts = Post::factory(100)->withFixture()->recycle($allUsers = $users->push($huy))->create();
+
         Comment::factory(600)->recycle($posts)->recycle($allUsers)->create();
-        Like::factory(500)->recycle($allUsers)->create(['likeable_id' => Comment::factory()]);
+        Like::factory(500)->recycle($allUsers)->recycle($posts)->create(['likeable_id' => Comment::factory()]);
         Like::factory(500)->recycle($allUsers)->create();
+
+        Post::query()->chunk(100, function ($posts) {
+            $posts->each(function ($post) {
+                $post->increment('likes_count', $post->refresh()->likes()->count());
+            });
+        });
+
+        Comment::query()->chunk(100, function ($comments) {
+            $comments->each(function ($comment) {
+                $comment->increment('likes_count', $comment->refresh()->likes()->count());
+            });
+        });
     }
 }

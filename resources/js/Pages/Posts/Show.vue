@@ -85,6 +85,7 @@ const cancelEditCommentMode = () => {
     <AppLayout :title="post.title">
         <Container>
             <Pill :href="route('posts.index', {topicSlug: post.topic.slug})">{{post.topic.name}}</Pill>
+            <div class="text-pink-500 font-bold my-2">  {{  post.likes_count_label }}</div>
             <PageHeading class="mt-2">{{post.title}}</PageHeading>
             <span class="text-gray-500 text-sm py-2 inline-block">{{ formatedDate }} by {{ post.user.name }}</span>
             <article>

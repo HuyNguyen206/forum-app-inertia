@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Number;
+use Illuminate\Support\Str;
 
 class PostResource extends BaseResource
 {
@@ -18,6 +20,8 @@ class PostResource extends BaseResource
             'title' => $this->title,
             'body' => $this->body,
             'body_html' => $this->body_html,
+            'likes_count' => $this->likes_count,
+            'likes_count_label' => Number::abbreviate($this->likes_count) . ' ' . Str::plural('like', $this->likes_count),
             'user' => new UserResource($this->whenLoaded('user')),
             'topic' => new TopicResource($this->whenLoaded('topic')),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),

@@ -38,13 +38,14 @@ const formatDate = (post) => {
                         <span class="text-gray-500 text-sm py-2 block">{{ formatDate(post) }} by {{
                                 post.user.name
                             }}</span>
+                        <span class="text-pink-500 font-bold">  {{  post.likes_count_label }}</span>
                     </Link>
                     <Pill :href="route('posts.index', {topicSlug: post.topic.slug})">
                         {{ post.topic.name }}
                     </Pill>
                 </li>
             </ul>
-            <Paginator :meta="posts.meta" only="posts"></Paginator>
+            <Paginator :meta="posts.meta" :only="['posts']"></Paginator>
         </Container>
     </AppLayout>
 </template>

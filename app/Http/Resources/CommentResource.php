@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Number;
+use Illuminate\Support\Str;
 
 class CommentResource extends BaseResource
 {
@@ -23,7 +25,8 @@ class CommentResource extends BaseResource
             ],
             'user' => new UserResource($this->whenLoaded('user')),
             'post' => new PostResource($this->whenLoaded('post')),
-
+            'likes_count' => $this->likes_count,
+            'likes_count_label' => Number::abbreviate($this->likes_count) . ' ' . Str::plural('like', $this->likes_count),
         ];
     }
 }
