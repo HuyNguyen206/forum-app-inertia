@@ -2,64 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Like;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function toggleLike(Request $request, string $type, int $modelId)
     {
-        //
-    }
+        /**
+         * @var class-string<Model>|null $class
+         */
+        $class = Relation::getMorphedModel($type);
+        if (null === $class) {
+            throw new AuthorizationException();
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $model = $class::findOrFail($modelId);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $likeModel = $request->user()->likes()->where('likes.likeable_type', $type)->where('likes.likeable_id', $modelId)->first();
+        $isLike = true;
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Like $like)
-    {
-        //
-    }
+        if ($likeModel) {
+//            $this->authorize('create', [Like::class, $model]);
+            $isLike = false;
+            $likeModel->delete();
+            $model->decrement('likes_count');
+        } else {
+            $request->user()->likes()->create([
+                'likeable_type' => $type,
+                'likeable_id' => $model->id,
+            ]);
+            $model->increment('likes_count');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Like $like)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Like $like)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Like $like)
-    {
-        //
+        return back()->with('success', $isLike ? "You like this $type" : "You dislike this $type");
     }
 }

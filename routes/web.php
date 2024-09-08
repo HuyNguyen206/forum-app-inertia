@@ -29,6 +29,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::patch('likes/{type}/{model}', [\App\Http\Controllers\LikeController::class, 'toggleLike'])->name('likes.toggle');
     Route::resource('posts.comments', \App\Http\Controllers\CommentController::class)->shallow()->only(['store', 'destroy', 'update']);
     Route::resource('posts', \App\Http\Controllers\PostController::class)->only(['store', 'destroy', 'update', 'create']);
 

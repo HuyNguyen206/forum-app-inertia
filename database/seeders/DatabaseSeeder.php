@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
 //            Like::factory(10)->create(['user_id' => $user->id]);
 //            Like::factory(10)->create(['user_id' => $user->id, 'likeable_id' => Comment::factory()]);
 //        });
+//\App\Models\Like::factory(1000)->for(\App\Models\Post::find(512), 'likeable')->create();
 
         $posts = Post::factory(100)->withFixture()->recycle($allUsers = $users->push($huy))->create();
 
