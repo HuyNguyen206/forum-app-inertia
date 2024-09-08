@@ -27,6 +27,7 @@ class PostResource extends BaseResource
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'show_post_url' => $this->getShowPostUrl($request->query()),
             'show_post_url_without_query_string' => $this->getShowPostUrl(),
+            'is_like' => auth()->user()?->likeModel($this->resource) ?? false
         ];
     }
 }

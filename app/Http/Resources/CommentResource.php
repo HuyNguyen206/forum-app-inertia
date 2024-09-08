@@ -27,6 +27,7 @@ class CommentResource extends BaseResource
             'post' => new PostResource($this->whenLoaded('post')),
             'likes_count' => $this->likes_count,
             'likes_count_label' => Number::abbreviate($this->likes_count) . ' ' . Str::plural('like', $this->likes_count),
+            'is_like' => auth()->user()?->likeModel($this->resource) ?? false,
         ];
     }
 }

@@ -27,7 +27,8 @@ class PostFactory extends Factory
                 return count($topicIds) ? collect($topicIds)->random() : Topic::factory()->create()->id;
             },
             'title' => str($this->faker->sentence)->beforeLast('.')->title(),
-            'body' => Collection::times(4, fn() => $this->faker->realText(600))->join(PHP_EOL . PHP_EOL)
+            'body' => Collection::times(4, fn() => $this->faker->realText(600))->join(PHP_EOL . PHP_EOL),
+            'likes_count' => 0
         ];
     }
 
