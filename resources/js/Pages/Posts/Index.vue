@@ -3,31 +3,58 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Container from "@/Components/Container.vue";
 import Paginator from "@/Components/paginator.vue";
-import {Link} from '@inertiajs/vue3'
+import {Link, useForm} from '@inertiajs/vue3'
 import {formatDistance, parseISO} from "date-fns";
 import PageHeading from "@/Components/PageHeading.vue";
 import Pill from "@/Components/Pill.vue";
+import TextInput from "@/Components/TextInput.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
-defineProps(['posts', 'selectedTopic', 'topics'])
+const props = defineProps(['posts', 'selectedTopic', 'topics', 'search'])
 
 const formatDate = (post) => {
     return formatDistance(parseISO(post.created_at), new Date(), {addSuffix: true});
+}
+
+const searchForm = useForm({
+    search: props.search
+})
+
+const search = () => searchForm.get(route('posts.index', props.selectedTopic ? props.selectedTopic.slug : ''))
+
+const reset = function () {
+    searchForm.search = '';
+    search()
 }
 </script>
 
 <template>
     <AppLayout>
         <Container>
-            <Link :href="route('posts.index')" v-if="selectedTopic" class="underline text-blue-600">
+            <Link :href="route('posts.index', {search: props.search})" v-if="selectedTopic" class="underline text-blue-600">
                 Back to all posts
             </Link>
             <menu class="flex justify-between flex-grow-0 my-4">
                 <li v-for="topic in topics" :key="topic.id">
-                    <Pill :href="route('posts.index', {topicSlug: topic.slug})" :is-active="selectedTopic ? topic.id === selectedTopic.id : false">
+                    <Pill :href="route('posts.index', {topicSlug: topic.slug, search: props.search})" :is-active="selectedTopic ? topic.id === selectedTopic.id : false">
                         {{topic.name}}
                     </Pill>
                 </li>
             </menu>
+
+                <form @submit.prevent="search">
+                    <div>
+                        <InputLabel for="query">Search</InputLabel>
+                        <div class="flex space-x-2 mt-1">
+                            <TextInput v-model="searchForm.search" class="mt-1 w-full" id="query"/>
+                            <div class="flex">
+                            <SecondaryButton type="submit">Search</SecondaryButton>
+                            <SecondaryButton v-if="searchForm.search" type="button" @click.prevent="reset">Clear</SecondaryButton>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
             <PageHeading v-text="selectedTopic ? selectedTopic.name : 'All posts' "></PageHeading>
             <p v-if="selectedTopic" class="mt-1 text-gray-500 text-sm">{{ selectedTopic.description }}</p>
             <ul class="divide-y">
@@ -54,6 +81,8 @@ const formatDate = (post) => {
         </Container>
     </AppLayout>
 </template>
+
+
 
 <style scoped>
 

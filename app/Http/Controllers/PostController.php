@@ -28,17 +28,27 @@ class PostController extends Controller
     {
         $topic = Topic::where('slug', $topicSlug)->first();
 
-        $posts = Post::query()->when($topic, function (Builder $query) use ($topic) {
-//            $query->whereHas('topic', function (Builder $query) use ($topicSlug) {
-//                $query->where('slug', $topicSlug);
-//            });
-            $query->whereBelongsTo($topic);
-        })->with(['user', 'comments', 'topic'])->latest()->paginate();
+        $posts = Post::search($request->query('search'))
+            ->when($topic, fn(\Laravel\Scout\Builder $builder) => $builder->where('topic_id', $topic->id) )
+            ->query(fn(Builder $builder) => $builder->with(['user', 'comments', 'topic']) )
+        ->latest()->paginate()->withQueryString();
+
+//        $posts = Post::query()
+//            ->when($topic, function (Builder $query) use ($topic) {
+////            $query->whereHas('topic', function (Builder $query) use ($topicSlug) {
+////                $query->where('slug', $topicSlug);
+////            });
+//            $query->whereBelongsTo($topic);
+//            })
+//            ->when($search = $request->query('search'), function (Builder $query) use($search) {
+//                $query->whereAny(['title', 'body'], 'like', "%$search%");
+//            })->with(['user', 'comments', 'topic'])->latest()->paginate()->withQueryString();
 
         return inertia('Posts/Index', [
             'posts' => PostResource::collection($posts),
             'selectedTopic' => $topic ? TopicResource::make($topic) : null,
             'topics' => TopicResource::collection(Topic::all()),
+            'search' => $request->search
             ]);
     }
 
